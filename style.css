@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+    background-color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,6 +14,14 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 300px;
+}
+
+body:focus-within{
+    background-color: transparent;
+}
+.converter:focus-within {
+    background-color: #ffffff;
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.4);
 }
 
 h1, h3 {

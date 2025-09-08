@@ -1,73 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Free Sabnet Calculator"> 
-    <meta property="og:description" content="Free Subnet Calculator, use Without Registration" > 
-    <meta property="og:image" content="https://i.ibb.co/zHN26wR/resized-image-4.png"> 
-    <meta property="og:url"content="https://itdata.ge">
-    <title>Subnet Calculator</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="description" content="Free Subnet Calculator — IPv4 CIDR, netmask, network/broadcast, usable hosts. No login." />
+  <meta property="og:title" content="Free Subnet Calculator" />
+  <meta property="og:description" content="IPv4 subnet calculator with CIDR slider, copy/export, and light/dark theme." />
+  <meta property="og:image" content="https://i.ibb.co/zHN26wR/resized-image-4.png" />
+  <meta property="og:url" content="https://itdata.ge" />
+  <title>Subnet Calculator</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-    <div class="container">
-        <h1>Subnet Calculator</h1>
-        <div class="form-group">
-            <label for="ip-address">IP Address:</label>
-            <input type="text" id="ip-address" placeholder="192.168.0.1">
-        </div>
-        <div class="form-group">
-            <label for="subnet-mask">Subnet Mask:</label>
-            <select id="subnet-mask">
-                <option value="32">255.255.255.255 (/32)</option>
-                <option value="31">255.255.255.254 (/31)</option>
-                <option value="30">255.255.255.252 (/30)</option>
-                <option value="29">255.255.255.248 (/29)</option>
-                <option value="28">255.255.255.240 (/28)</option>
-                <option value="27">255.255.255.224 (/27)</option>
-                <option value="26">255.255.255.192 (/26)</option>
-                <option value="25">255.255.255.128 (/25)</option>
-                <option value="24">255.255.255.0 (/24)</option>
-                <option value="23">255.255.254.0 (/23)</option>
-                <option value="22">255.255.252.0 (/22)</option>
-                <option value="21">255.255.248.0 (/21)</option>
-                <option value="20">255.255.240.0 (/20)</option>
-                <option value="19">255.255.224.0 (/19)</option>
-                <option value="18">255.255.192.0 (/18)</option>
-                <option value="17">255.255.128.0 (/17)</option>
-                <option value="16">255.255.0.0 (/16)</option>
-                <option value="15">255.254.0.0 (/15)</option>
-                <option value="14">255.252.0.0 (/14)</option>
-                <option value="13">255.248.0.0 (/13)</option>
-                <option value="12">255.240.0.0 (/12)</option>
-                <option value="11">255.224.0.0 (/11)</option>
-                <option value="10">255.192.0.0 (/10)</option>
-                <option value="9">255.128.0.0 (/9)</option>
-                <option value="8">255.0.0.0 (/8)</option>
-                <option value="7">254.0.0.0 (/7)</option>
-                <option value="6">252.0.0.0 (/6)</option>
-                <option value="5">248.0.0.0 (/5)</option>
-                <option value="4">240.0.0.0 (/4)</option>
-                <option value="3">224.0.0.0 (/3)</option>
-                <option value="2">192.0.0.0 (/2)</option>
-                <option value="1">128.0.0.0 (/1)</option>
-                <option value="0">0.0.0.0 (/0)</option>
-            </select>
-        </div>
-        <button onclick="calculate()">Calculate</button>
-
-        <div id="results">
-            <div class="result-item" id="network-address"></div>
-            <div class="result-item" id="broadcast-address"></div>
-            <div class="result-item" id="first-usable"></div>
-            <div class="result-item" id="last-usable"></div>
-            <div class="result-item" id="total-hosts"></div>
-        </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1>Subnet Calculator</h1>
+      <div class="header-actions">
+        <button id="themeToggle" class="ghost" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+      </div>
     </div>
+  </header>
 
-    <script src="script.js"></script>
+  <main class="container">
+    <section class="card">
+      <div class="grid three">
+        <div class="form-group">
+          <label for="ip">IP Address</label>
+          <input id="ip" type="text" inputmode="numeric" spellcheck="false" placeholder="192.168.1.10 or 192.168.1.10/24" />
+          <div class="muted small">Tip: you can paste CIDR directly (e.g., <code>10.0.0.1/16</code>).</div>
+        </div>
+
+        <div class="form-group">
+          <label for="cidr">CIDR (/prefix)</label>
+          <div class="hstack">
+            <input id="cidr" type="range" min="0" max="32" value="24" />
+            <output id="cidrOut" for="cidr">/24</output>
+          </div>
+          <div class="muted small" id="maskText">255.255.255.0</div>
+        </div>
+
+        <div class="form-group">
+          <label for="maskSelect">Netmask</label>
+          <select id="maskSelect" aria-label="Select subnet mask"></select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="calcBtn" class="primary">Calculate</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+        <button id="saveBtn" class="ghost">Save</button>
+        <button id="copyBtn" class="ghost" disabled>Copy</button>
+        <button id="exportBtn" class="ghost" disabled>Export</button>
+      </div>
+      <p class="muted small">Saved values are stored locally in this browser. Press Ctrl/⌘+Enter to calculate.</p>
+    </section>
+
+    <section class="card">
+      <h2>Results</h2>
+      <div id="err" class="error hidden" role="alert"></div>
+      <div id="results" class="results grid two hidden">
+        <div class="kv"><div class="k">Input</div><div class="v" id="r-input">—</div></div>
+        <div class="kv"><div class="k">CIDR</div><div class="v" id="r-cidr">—</div></div>
+        <div class="kv"><div class="k">Netmask</div><div class="v" id="r-mask">—</div></div>
+        <div class="kv"><div class="k">Wildcard</div><div class="v" id="r-wildcard">—</div></div>
+        <div class="kv"><div class="k">Network</div><div class="v" id="r-network">—</div></div>
+        <div class="kv"><div class="k">Broadcast</div><div class="v" id="r-broadcast">—</div></div>
+        <div class="kv"><div class="k">First usable</div><div class="v" id="r-first">—</div></div>
+        <div class="kv"><div class="k">Last usable</div><div class="v" id="r-last">—</div></div>
+        <div class="kv"><div class="k">Addresses</div><div class="v" id="r-addrs">—</div></div>
+        <div class="kv"><div class="k">Usable hosts</div><div class="v" id="r-usable">—</div></div>
+        <div class="kv"><div class="k">Class</div><div class="v" id="r-class">—</div></div>
+        <div class="kv"><div class="k">Scope</div><div class="v" id="r-scope">—</div></div>
+      </div>
+    </section>
+
+    <section class="ad card">
+      <div class="ad-box">
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-1234552946070834"
+             data-ad-slot="3273843323"></ins>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container muted small">
+    <p>IPv4 only for now. /31 treats both addresses as usable (RFC 3021). /32 is a single host.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234552946070834" crossorigin="anonymous"></script>
+  <script>window.addEventListener('load',()=>{(adsbygoogle=window.adsbygoogle||[]).push({});});</script>
 </body>
 </html>
